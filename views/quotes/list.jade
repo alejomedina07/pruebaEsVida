@@ -1,0 +1,62 @@
+extends ../layout/layout
+
+block header
+  include ../inclusions/header
+block content
+  .container-fluid(ng-controller='patientController as $pCtr')
+    .row(ng-init="$pCtr.list = #{list ? JSON.stringify(list) : JSON.stringify([]) }")
+      include ../inclusions/sidebar
+      .col-md-9.ml-sm-auto.col-lg-10.px-4
+        .margin
+        .row
+          .col-md-7
+            h2 Scheduled appointments
+        .row
+          if list && list.length
+            .col-md-7
+              
+              a(href="#" ng-repeat="quote in $pCtr.list track by $index" ng-click="$pCtr.quote = quote; $pCtr.position = $index")
+                .card
+                  .row
+                    .col-md-2(ng-init="$pCtr.getYear(quote.patient.birthdate)")
+                      img.avatar.d-block.w-100(ng-if="quote.patient.gender != 'male'" src='/static/images/AvatarF.jpg', alt='Avatar')
+                      img.avatar.d-block.w-100(ng-if="quote.patient.gender == 'male'" src='/static/images/icono-de-usuario-masculino.jpg', alt='Avatar')
+                    .col-md-6
+                      h2 {{quote.patient.name}}
+                      h6 {{$pCtr.years[$index]}}
+                      label {{quote.patient.phone}}
+                    .col-md-2(ng-init="$pCtr.getAppointmentTimes(quote.appointmentTime)")
+                      h6 {{$pCtr.appointmentTimes[$index]}}
+                      
+                    .col-md-2.text-center
+                      .type
+                        i.fa.fa-video-camera(aria-hidden='true' ng-if="quote.type == 'video'" )
+                        i.fa.fa-phone(aria-hidden='true' ng-if="quote.type == 'phone'" )
+                        h6 Start
+                    
+            .col-md-5
+              .card(ng-if="!$pCtr.quote")
+                h2 Select a patient to review their Details
+              .card(ng-if="$pCtr.quote")
+                .header-card
+                  h4 Details of the appointment
+                br
+                br
+                p Patient: 
+                  b {{$pCtr.quote.patient.name}}      
+                p Birthdate: 
+                  b {{$pCtr.years[$pCtr.position]}}
+                p Phone number: 
+                  b {{$pCtr.quote.patient.phone}}
+                  
+                p Appointment Time: 
+                  b {{$pCtr.appointmentTimes[$pCtr.position]}}
+                p Reason for the appointment : 
+                  b {{$pCtr.quote.reason}}     
+                p Duration
+                  {{$pCtr.quote.type == 'phone'? '15 minutes' : '30 minutes'}}
+                  
+          else 
+            .col-md-7
+              h2 No appointments to show 
+              a.btn.btn-info(href="/") List of Patients

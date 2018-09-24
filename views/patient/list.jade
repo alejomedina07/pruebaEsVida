@@ -1,0 +1,62 @@
+extends ../layout/layout
+
+block header
+  include ../inclusions/header
+block content
+  .container-fluid(ng-controller='patientController as $pCtr')
+    .row(ng-init="$pCtr.list = #{list ? JSON.stringify(list) : JSON.stringify([]) }")
+      include ../inclusions/sidebar
+      .col-md-9.ml-sm-auto.col-lg-10.px-4
+        .margin
+        .row
+          .col-md-7
+            h2 List of patients
+        .row
+          if list && list.length
+            .col-md-7
+              .card(ng-repeat="patient in $pCtr.list track by $index")
+                .row
+                  .col-md-2(ng-init="$pCtr.getYear(patient.birthdate)")
+                    img.avatar.d-block.w-100(ng-if="patient.gender != 'male'" src='/static/images/AvatarF.jpg', alt='Avatar')
+                    img.avatar.d-block.w-100(ng-if="patient.gender == 'male'" src='/static/images/icono-de-usuario-masculino.jpg', alt='Avatar')
+                  .col-md-8
+                    h2 {{patient.name}}
+                    h6 {{$pCtr.years[$index]}}
+                    label {{patient.phone}}
+                  .col-md-2.text-center
+                    a(href="#" ng-click="$pCtr.quote = patient;$pCtr.position = $index")
+                      label add quotes
+                      i.fa.fa-plus(aria-hidden='true')
+            .col-md-5
+              .card(ng-if="$pCtr.quote")
+                h3 {{$pCtr.quote.name}}
+                h6 {{$pCtr.years[$pCtr.position]}}
+                form( method='post', action="/quote" )
+                  input(type="hidden" name="patientId" ng-value="$pCtr.quote._id")
+                  .form-row
+                    .form-group.col-md-12
+                      label(for='reason') Reason for the appointment 
+                      textarea#reason.form-control(rows='2' name="reason")
+                  .form-row
+                    .form-group.col-md-12
+                      label(for='appointmentTime') Appointment Time
+                      input#appointmentTime.form-control(type="datetime-local" ng-model="appointmentTime" placeholder='' ng-change="$pCtr.validateTime(appointmentTime)")
+                      input(type="hidden" name="appointmentTime" ng-value="appointmentTime")
+                  .form-row
+                    .form-group.col-md-12
+                      - var types = [{value:"phone", text:"Appointment by phone call"}, {value:"video", text:"Appointment by video"}]
+                      label(for='type') type of appointment
+                      select#type.form-control(name="type")
+                        each option in types
+                          option(value="#{option.value}")  #{option.text}
+
+                  button.btn.btn-primary.mb-2(type='submit' ng-disabled="!$pCtr.next") Submit        
+                  .error(ng-if="$pCtr.message")
+                    p  {{$pCtr.message}}
+                        
+          else 
+            .col-md-7
+              h2 There are no patients to show
+              a.btn.btn-info(href="/add-patient") Add patient
+              
+                        

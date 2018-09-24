@@ -1,0 +1,21 @@
+- var stylesheets = ["/static/bootstrap/dist/css/bootstrap.css",  "/static/font-awesome/css/font-awesome.min.css", "/static/styles/style.css"]
+- var javascripts = ["/static/jquery/dist/jquery.js", "/static/bootstrap/dist/js/bootstrap.js", "/static/angular/angular.js", "/static/javascripts/main.js",]
+doctype html
+html(ng-app='es_vida')
+  head
+    meta(charset='utf-8')
+    title= "Es-vida"
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    meta(keywords="Es-vida")
+    meta(description="Es-vida")
+    each stylesheet in stylesheets
+      link(rel='stylesheet', href="#{stylesheet}")
+    each javascript in javascripts
+      script(src="#{javascript}")
+
+    
+  body
+    block header
+    block content
+    block footer

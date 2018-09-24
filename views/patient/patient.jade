@@ -1,0 +1,57 @@
+extends ./layout/layout
+
+block header
+  include ./inclusions/header
+block content
+  .container-fluid(ng-controller='principalController as $pCtr')
+    .row
+      include ./inclusions/sidebar
+      .col-md-9.ml-sm-auto.col-lg-10.px-4
+        h2 hola mundof
+        p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur asperiores veritatis similique odit magnam ipsam distinctio et officia inventore praesentium alias officiis quos, deleniti dolor recusandae, ab dicta amet quis.
+        .card
+          form(name="#{patient ? 'patient' : ''}" method='post', action="/patient/#{patient ? 'edit/' +  patient._id:''}" )
+            input(name='_method', value="#{patient ? 'put' : 'post'}", type='hidden')  
+            .form-row
+              .form-group.col-md-6
+                label(for='name') Name 
+                .input-group
+                  .input-group-prepend
+                    .input-group-text 
+                      i.fa.fa-user-o(aria-hidden='true')
+                  input#name.form-control(type='text', name="name" placeholder='name')
+
+
+              .form-group.col-md-6
+                label(for='birthdate') birthdate
+                .input-group
+                  .input-group-prepend
+                    .input-group-text 
+                      i.fa.fa-birthday-cake(aria-hidden='true')
+                  //- input#birthdate.form-control(type="datetime-local" name="birthdate" placeholder='birthdate')
+                  input#birthdate.form-control(type="date" name="birthdate" placeholder='birthdate')
+
+            .form-row
+              .form-group.col-md-6
+                label(for='phone') phone
+                .input-group
+                  .input-group-prepend
+                    .input-group-text 
+                      i.fa.fa-phone(aria-hidden='true')
+                  input#phone.form-control(type='text', name="phone"  placeholder='phone')
+              
+              .form-group.col-md-6
+                - var genders = [{value:"male", text:"Male"}, {value:"female", text:"Female"}]
+                label(for='gender') gender
+                .input-group
+                  .input-group-prepend
+                    .input-group-text 
+                      i.fa.fa-venus-mars(aria-hidden='true')
+                  //- input#gender.form-control(type='text', name="gender" placeholder='gender')
+                  select#gender.form-control(name="gender")
+                    each option in genders
+                      option(value="#{option.value}")  #{option.text}
+                    //- option(selected='' ) Masculino
+                    //- option Femeninno
+              .col-md-6.col-sm-12
+                button.btn.btn-primary.mb-2(type='submit') Submit            
